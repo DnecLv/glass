@@ -9,7 +9,7 @@ def init():
     
     if not glfwInit():
         raise Exception("glfwInit error")
-
+    
     # * 四倍抗锯齿
     # glfwWindowHint(GLFW_SAMPLES, 4)
     # create window
