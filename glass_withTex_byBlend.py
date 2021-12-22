@@ -1,11 +1,11 @@
 # python 3.7.3
 # -*- coding:UTF-8 -*-
 # AUTHOR: DnecLv
-# FILE: E:\stu\dnec_proj\learn_openGL2\glass.py
-# DATE: 2021/12/16 周四
-# TIME: 18:34:45
+# FILE: C:\Users\Dnec\Desktop\glasses\glass_withTex.py
+# DATE: 2021/12/22 周三
+# TIME: 09:39:36
 
-# DESCRIPTION:红青眼镜
+# DESCRIPTION:
 
 
 from tools.camera import mouse_look_clb, mouse_enter_clb, key_input_clb, do_movement, cam, mouse_button_callback
@@ -200,22 +200,8 @@ while not glfwWindowShouldClose(window):
     glDeliverFunc(glUniformMatrix4fv, shader,
                   "view", view)
     glDrawArrays(GL_TRIANGLES, 0, len(obj1.vertex_index))
-
-    # glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
-    # * 渲染专门用来结合的四边形
-    glBindFramebuffer(GL_FRAMEBUFFER, 0)
-    glDisable(GL_DEPTH_TEST)
-    glClearColor(1.0, 1.0, 1.0, 1.0)
-    glClear(GL_COLOR_BUFFER_BIT)
-    # * 绑定刚刚画好的俩纹理
-    glUseProgram(screenShader)
-    glBindVertexArray(quadVAO)
-    glActiveTexture(GL_TEXTURE0)
-    glBindTexture(GL_TEXTURE_2D, PartMap[0])
-    glActiveTexture(GL_TEXTURE1)
-    glBindTexture(GL_TEXTURE_2D, PartMap[1])
-    glDrawArrays(GL_TRIANGLES, 0, 6)
-    # glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
+    
+    
     glfwSwapBuffers(window)
 
 glfwTerminate()
