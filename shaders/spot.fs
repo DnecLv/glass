@@ -34,7 +34,6 @@ void main() {
     vec3 specular = specularStrength * spec * lightColor * vec3(texture(Texture1, TexCoords));
 
     vec3 result = (ambient + diffuse + specular) * objectColor;
-    // vec3 result = (ambient + specular) * objectColor;    
 
     if(switcher == 0) {
         fColor = vec4(result.r, 0.0, 0.0, 1.0);

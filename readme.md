@@ -2,11 +2,12 @@
 
 `pip3 install -r requirements.txt`
 
-其中pyopengl自动下的是32位的,需要自己下,要不自己改一下requirements.txt的路径和东西(根据不同版本都在文件夹内)
+其中pyopengl自动下的是32位的,需要自己手动安装,要不自己改一下requirements.txt的路径和东西(根据不同版本都在文件夹内)
 
+手动安装：py3.9为例 在当前目录 pip install PyOpenGL-3.1.5-cp39-cp39-win_amd64.whl
 ---
 
-### 内部逻辑说明
+### 内部逻辑说明(Framebuffer方式,直观的方法)
 
 设置两个帧缓冲,离线渲染左眼右眼两帧,渲染结果分别只取r/gb通道
 
