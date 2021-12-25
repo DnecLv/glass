@@ -7,11 +7,19 @@ class ObjLoader:
         self.text_coords = []
         self.norm_coords = []
 
-        self.vertex_index = []
-        self.texture_index = []
-        self.normal_index = []
-
-        self.model = []
+        self.vertex_index_vvn = []
+        self.normal_index_vvn = []
+        
+        self.vertex_index_vvt = []
+        self.texture_index_vvt = []
+        
+        self.vertex_index_vvtvn = []
+        self.texture_index_vvtvn = []
+        self.normal_index_vvtvn = []
+        
+        self.model_vvn = []
+        self.model_vvt = []
+        self.model_vvtvn = []
 
     def load_model(self, file):
         for line in open(file, 'r'):
@@ -29,27 +37,109 @@ class ObjLoader:
                 self.norm_coords.append(values[1:4])
 
             if values[0] == 'f':
-                face_i = []
-                text_i = []
-                norm_i = []
-                for v in values[1:4]:
-                    w = v.split('/')
-                    face_i.append(int(w[0])-1)
-                    text_i.append(int(w[1])-1)
-                    norm_i.append(int(w[2])-1)
-                self.vertex_index.append(face_i)
-                self.texture_index.append(text_i)
-                self.normal_index.append(norm_i)
+                # check f's format
+                
+                # v/vn
+                if values[1].split('//')[0] != values[1]:
+                    face_i = []
+                    norm_i = []
+                    for v in values[1:4]:
+                        w = v.split('/')
+                        face_i.append(int(w[0])-1)
+                        norm_i.append(int(w[2])-1)
+                    self.vertex_index_vvn.append(face_i)
+                    self.normal_index_vvn.append(norm_i)
 
-        self.vertex_index = [y for x in self.vertex_index for y in x]
-        self.texture_index = [y for x in self.texture_index for y in x]
-        self.normal_index = [y for x in self.normal_index for y in x]
+                    if len(values) == 5:
+                        face_i = []
+                        text_i = []
+                        norm_i = []
+                        for v in [values[1],values[3],values[4]]:
+                            w = v.split('/')
+                            face_i.append(int(w[0])-1)
+                            norm_i.append(int(w[2])-1)
+                        self.vertex_index_vvn.append(face_i)
+                        self.normal_index_vvn.append(norm_i)
+                        
+                # v/vt
+                elif len(values[1].split('/')) == 2:
+                    print(values,values[1].split('/')[0])
+                    face_i = []
+                    text_i = []
+                    for v in values[1:4]:
+                        w = v.split('/')
+                        face_i.append(int(w[0])-1)
+                        text_i.append(int(w[1])-1)
+                    self.vertex_index_vvt.append(face_i)
+                    self.texture_index_vvt.append(text_i)
 
-        for i in self.vertex_index:
-            self.model.extend(self.vert_coords[i])
+                    if len(values) == 5:
+                        face_i = []
+                        text_i = []
+                        for v in [values[1],values[3],values[4]]:
+                            w = v.split('/')
+                            face_i.append(int(w[0])-1)
+                            text_i.append(int(w[1])-1)
+                        self.vertex_index_vvt.append(face_i)
+                        self.texture_index_vvt.append(text_i)
+                        
+                # vvn
+                elif len(values[1].split('/')) == 3:
+                    face_i = []
+                    text_i = []
+                    norm_i = []
+                    for v in values[1:4]:
+                        w = v.split('/')
+                        face_i.append(int(w[0])-1)
+                        text_i.append(int(w[1])-1)
+                        norm_i.append(int(w[2])-1)
+                    self.vertex_index_vvtvn.append(face_i)
+                    self.texture_index_vvtvn.append(text_i)
+                    self.normal_index_vvtvn.append(norm_i)
 
-        for i in self.normal_index:
-            self.model.extend(self.norm_coords[i])
-        for i in self.texture_index:
-            self.model.extend(self.text_coords[i])
-        self.model = np.array(self.model, dtype='float32')
+                    if len(values) == 5:
+                        face_i = []
+                        text_i = []
+                        norm_i = []
+                        for v in [values[1],values[3],values[4]]:
+                            w = v.split('/')
+                            face_i.append(int(w[0])-1)
+                            text_i.append(int(w[1])-1)
+                            norm_i.append(int(w[2])-1)
+                        self.vertex_index_vvtvn.append(face_i)
+                        self.texture_index_vvtvn.append(text_i)
+                        self.normal_index_vvtvn.append(norm_i)
+                        
+                                            
+        self.vertex_index_vvn = [y for x in self.vertex_index_vvn for y in x]
+        self.normal_index_vvn = [y for x in self.normal_index_vvn for y in x]
+        
+        self.vertex_index_vvt = [y for x in self.vertex_index_vvt for y in x]
+        self.texture_index_vvt = [y for x in self.texture_index_vvt for y in x]
+        
+        self.vertex_index_vvtvn = [y for x in self.vertex_index_vvtvn for y in x]
+        self.texture_index_vvtvn = [y for x in self.texture_index_vvtvn for y in x]
+        self.normal_index_vvtvn = [y for x in self.normal_index_vvtvn for y in x]
+
+        for i in self.vertex_index_vvtvn:
+            self.model_vvtvn.extend(self.vert_coords[i])
+        for i in self.normal_index_vvtvn:
+            self.model_vvtvn.extend(self.norm_coords[i])
+        for i in self.texture_index_vvtvn:
+            self.model_vvtvn.extend(self.text_coords[i])
+            
+        for i in self.vertex_index_vvn:
+            self.model_vvn.extend(self.vert_coords[i])
+        for i in self.normal_index_vvn:
+            self.model_vvn.extend(self.norm_coords[i])
+            
+        
+        for i in self.vertex_index_vvt:
+            self.model_vvt.extend(self.vert_coords[i])
+        for i in self.texture_index_vvt:
+            self.model_vvt.extend(self.text_coords[i])
+            
+                
+        self.model_vvn = np.array(self.model_vvn, dtype='float32')
+        self.model_vvt = np.array(self.model_vvt, dtype='float32')
+        self.model_vvtvn = np.array(self.model_vvtvn, dtype='float32')

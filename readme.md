@@ -43,3 +43,7 @@ if(switcher == 0) {
 ```glsl
 FragColor = vec4(texture(screenTexture1, TexCoords)[0],texture(screenTexture2, TexCoords)[1],texture(screenTexture2, TexCoords)[2], 1.0);
 ```
+
+### 注意
+
+只支持一张贴图 + 一个obj文件 多了ObjLoader自己写(

@@ -12,7 +12,7 @@ from tools.camera import mouse_look_clb, mouse_enter_clb, key_input_clb, do_move
 import pyrr
 from tools.init import *
 from OpenGL.GL.shaders import compileShader, compileProgram
-from tools.ezObjLoader_withoutt import ObjLoader
+from tools.ezObjLoader import ObjLoader
 
 # ------------------------------------ 主程 ------------------------------------ #
 window = init()
@@ -26,9 +26,9 @@ obj1 = ObjLoader()
 obj1.load_model("res/bunny.obj")
 shader = compileProgram(
     compileShader(readShader(
-        'shaders/StanfordBunny.vs'), GL_VERTEX_SHADER),
+        'shaders/vvn.vs'), GL_VERTEX_SHADER),
     compileShader(readShader(
-        'shaders/StanfordBunny.fs'), GL_FRAGMENT_SHADER)
+        'shaders/vvn.fs'), GL_FRAGMENT_SHADER)
 )
 screenShader = compileProgram(
     compileShader(readShader(
@@ -70,14 +70,14 @@ objVAO = glGenVertexArrays(1)
 objVBO = glGenBuffers(1)
 glBindVertexArray(objVAO)
 glBindBuffer(GL_ARRAY_BUFFER, objVBO)
-glBufferData(GL_ARRAY_BUFFER, obj1.model.itemsize * len(obj1.model),
-             obj1.model, GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, obj1.model_vvn.itemsize * len(obj1.model_vvn),
+             obj1.model_vvn, GL_STATIC_DRAW)
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-                      obj1.model.itemsize * 3, ctypes.c_void_p(0))
+                      obj1.model_vvn.itemsize * 3, ctypes.c_void_p(0))
 glEnableVertexAttribArray(1)
 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-                      obj1.model.itemsize * 3, ctypes.c_void_p(len(obj1.vertex_index) * 12))
+                      obj1.model_vvn.itemsize * 3, ctypes.c_void_p(len(obj1.vertex_index_vvn) * 12))
 
 # --------------------------------- 渲染用四边形 -------------------------------- #
 quadVertices = [
@@ -131,7 +131,6 @@ while not glfwWindowShouldClose(window):
     
     # 旋转矩阵,绕y轴旋转,绕x/z用from_x_rotation/from_z_rotation
     rot_y = pyrr.Matrix44.from_y_rotation(0.8 * glfwGetTime())
-    rot_y = pyrr.Matrix44.from_y_rotation(0.8 * glfwGetTime())
 
     glDeliverFunc(glUniformMatrix4fv, shader,
                   "model", rot_y)
@@ -156,7 +155,7 @@ while not glfwWindowShouldClose(window):
     view = cam.get_view_matrix(cam.camera_right*0.03) # 摄像机左移
     glDeliverFunc(glUniformMatrix4fv, shader,
                   "view", view)
-    glDrawArrays(GL_TRIANGLES, 0, len(obj1.vertex_index))
+    glDrawArrays(GL_TRIANGLES, 0, len(obj1.vertex_index_vvn))
     # * 右眼渲染 只写入GB
     
     glBindFramebuffer(GL_FRAMEBUFFER, PartMapFBO[1])
@@ -167,7 +166,7 @@ while not glfwWindowShouldClose(window):
     view = cam.get_view_matrix(-cam.camera_right*0.03) # 摄像机右移
     glDeliverFunc(glUniformMatrix4fv, shader,
                   "view", view)
-    glDrawArrays(GL_TRIANGLES, 0, len(obj1.vertex_index))
+    glDrawArrays(GL_TRIANGLES, 0, len(obj1.vertex_index_vvn))
     
     # glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
     # * 渲染专门用来结合的四边形
